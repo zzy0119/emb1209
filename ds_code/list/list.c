@@ -39,20 +39,16 @@ int list_insert(head_t *head, const void *data, int way)
 		head->headnode.next = new;
 	} else {
 		new->next = NULL;	
-		if (head->headnode.next == NULL)
-			head->headnode.next = new;
-		else {
-			for (p = head->headnode.next; p->next != NULL;p = p->next) 
-				;
-			p->next = new;
-		}
+		for (p = &head->headnode; p->next != NULL;p = p->next) 
+			;
+		p->next = new;
 	}
 
 	return 0;
 }
 
 // 找到匹配的结点 前一个结点
-static struct node_st *find_pre_node(head_t *head, const void *key, cmp_t cmp)
+static struct node_st *find_pre_node(const head_t *head, const void *key, cmp_t cmp)
 {
 	struct node_st *pre, *cur;	
 
@@ -87,10 +83,16 @@ int list_delete(head_t *head, const void *key, cmp_t cmp)
 	return 0;
 }
 
-#if 0
 // 查找
-void *list_find(const head_t *head, const void *key, cmp_t cmp);
-#endif
+void *list_find(const head_t *head, const void *key, cmp_t cmp)
+{
+	struct node_st *pre;	
+
+	pre = find_pre_node(head, key, cmp);
+	if (NULL == pre)
+		return NULL;
+	return pre->next->data;
+}
 
 // 遍历
 void list_traval(const head_t *head, pri_t pri)
@@ -101,7 +103,21 @@ void list_traval(const head_t *head, pri_t pri)
 		pri(p->data);
 }
 
-#if 0
 // 销毁
-void list_destroy(head_t *head);
-#endif
+void list_destroy(head_t *head)
+{
+	struct node_st *n, *cur;
+
+	for (cur=head->headnode.next, n=cur->next; ;) {
+		free(cur->data);	
+		free(cur);
+		cur = n;
+		if (cur == NULL)	
+			break;
+		n = cur->next;
+	}
+
+	free(head);
+}
+
+

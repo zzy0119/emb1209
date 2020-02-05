@@ -45,6 +45,8 @@ int main(void)
 
 	list_traval(head, pri_num);
 
+	list_destroy(head);
+
 	return 0;
 }
 
