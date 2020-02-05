@@ -48,8 +48,34 @@ int llist_insert(llisthead_t *head, const void *data, int way)
 	return 0;
 }
 
+static struct node_st *find_node(const llisthead_t *h, const void *key, cmp_t cmp)
+{
+	struct node_st *cur;
+
+	for (cur = h->head.next; cur != &h->head; cur = cur->next) {
+		if (cmp(cur->data, key) == 0) {
+			return cur;
+		}
+	}
+	return NULL;
+}
+
 // 删除
-int llist_delete(llisthead_t *h, const void *key, cmp_t cmp);
+int llist_delete(llisthead_t *h, const void *key, cmp_t cmp)
+{
+	struct node_st *del;
+
+	del = find_node(h, key, cmp);
+	if (del == NULL)
+		return -1;
+	del->prev->next = del->next;
+	del->next->prev = del->prev;
+	del->prev = del->next = NULL;
+	free(del->data);
+	free(del);
+
+	return 0;
+}
 
 // 遍历
 void llist_traval(const llisthead_t *h, pri_t pri)
@@ -62,4 +88,15 @@ void llist_traval(const llisthead_t *h, pri_t pri)
 }
 
 // 销毁
-void llist_destroy(llisthead_t *head);
+void llist_destroy(llisthead_t *h)
+{
+	struct node_st *cur, *n;	
+
+	for (cur=h->head.next, n=cur->next; cur != &h->head; cur=n, n=n->next ) {
+		free(cur->data);	
+		cur->data = NULL;
+		free(cur);
+	}
+	free(h);
+}
+

@@ -15,10 +15,19 @@ static void pri_stu(const void *data)
 	printf("%d %s\n", d->id, d->name);
 }
 
+static int stu_cmp(const void *data, const void *key)
+{
+	const struct stu_st *d = data;
+	const int *k = key;
+
+	return d->id - *k;
+}
+
 int main(void)
 {
 	llisthead_t *head;
 	struct stu_st stu;
+	int delid;
 
 	head = llisthead_init(sizeof(struct stu_st));
 	if (head == NULL)
@@ -31,6 +40,13 @@ int main(void)
 	}
 
 	llist_traval(head, pri_stu);
+	
+	printf("*************************\n");
+	delid = 3;
+	llist_delete(head, &delid, stu_cmp);
+	llist_traval(head, pri_stu);
+
+	llist_destroy(head);
 
 	return 0;
 }
