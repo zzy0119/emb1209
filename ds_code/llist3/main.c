@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "llist.h"
 
@@ -7,47 +8,30 @@
 struct stu_st {
 	int id;
 	char name[NAMESIZE];
-	struct node_st node;
+	node_t node;
 };
-
-static void pri_stu(const void *data)
-{
-	const struct stu_st *d = data;
-	printf("%d %s\n", d->id, d->name);
-}
-
-static int stu_cmp(const void *data, const void *key)
-{
-	const struct stu_st *d = data;
-	const int *k = key;
-
-	return d->id - *k;
-}
 
 int main(void)
 {
-	llisthead_t *head;
-	struct stu_st stu;
-	int delid;
+	node_t head;
+	struct stu_st *p;
+	node_t *cur;
 
-	head = llisthead_init(sizeof(struct stu_st));
-	if (head == NULL)
-		return 1;
+	llisthead_init(&head);
 
-	for (int i = 1; i < 10; i++) {
-		stu.id = i;	
-		snprintf(stu.name, NAMESIZE, "stu%d", i);
-		llist_insert(head, &stu, INSERT_TAIL);
-	}
+	for (int i = 1; i <= 10; i++) {
+		p = malloc(sizeof(struct stu_st));	
+		// if error
+		p->id = i; 
+		snprintf(p->name, NAMESIZE, "stu%d", i);
+		// llist_insert_head(&head, &p->node);
+		llist_insert_tail(&head, &p->node);
+	}	
 
-	llist_traval(head, pri_stu);
-	
-	printf("*************************\n");
-	delid = 3;
-	llist_delete(head, &delid, stu_cmp);
-	llist_traval(head, pri_stu);
-
-	llist_destroy(head);
+	for (cur = head.next; cur != &head; cur = cur->next) {
+		p = (char *)cur - (int)&((struct stu_st *)0)->node;
+		printf("%d %s\n", p->id,p->name);
+	}	
 
 	return 0;
 }

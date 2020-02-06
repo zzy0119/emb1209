@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "llist.h"
 
 // 函数接口
