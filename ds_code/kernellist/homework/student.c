@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "student.h"
 
@@ -38,6 +39,7 @@ int sys_del_stu(sys_student *s, const void *key, cmp_t cmp)
 	return 0;
 }
 
+#if 0
 // 查找
 struct stu_st sys_search_stu(const sys_student *s, const void *key, cmp_t cmp);
 
@@ -46,3 +48,19 @@ int sys_sum_stu(const sys_student *s);
 
 // 销毁
 void sys_destroy(sys_student *s);
+#endif
+
+void sys_traval(const sys_student *s)
+{
+	struct node_st *cur;
+	struct list_head *pos;
+
+	list_for_each(pos, s) {
+		cur = list_entry(pos, struct node_st, node);
+		printf("%s %d %s\n", cur->stu.name, cur->stu.age, cur->stu.tel);
+	}
+}
+
+
+
+

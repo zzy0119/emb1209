@@ -1,7 +1,7 @@
 #ifndef __STUDENT_H
 #define __STUDENT_H
 
-#include <list.h>
+#include "kernellist.h" 
 
 // 学生管理系统
 #define TELLENGTH	12
@@ -22,7 +22,7 @@ typedef int (*cmp_t)(const struct stu_st *data, const void *key);
 
 // 接口
 // 初始化学生管理系统结构
-int sys_init(sys_student *s);
+void sys_init(sys_student *s);
 
 // 增加
 int sys_add_stu(sys_student *s, struct stu_st stu);
@@ -38,6 +38,9 @@ int sys_sum_stu(const sys_student *s);
 
 // 销毁
 void sys_destroy(sys_student *s);
+
+// 遍历
+void sys_traval(const sys_student *s);
 
 #endif
 
