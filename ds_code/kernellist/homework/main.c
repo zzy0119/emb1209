@@ -14,6 +14,7 @@ static void get_extra_ch()
 
 }
 
+
 int main(void)
 {
 	sys_student sys;
