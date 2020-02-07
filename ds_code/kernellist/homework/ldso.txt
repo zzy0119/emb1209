@@ -12,5 +12,5 @@
 		sudo vim  /etc/ld.so.conf
 			将库所在路径写入此文件
 	重新加载库:
-		sudo lddconfig
+		sudo ldconfig
 	
