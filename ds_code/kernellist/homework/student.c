@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "student.h"
+#include <student.h>
 
 // 初始化学生管理系统结构
 void sys_init(sys_student *s)

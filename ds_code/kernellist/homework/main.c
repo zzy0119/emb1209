@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "student.h"
+#include <student.h>
 
 enum {STU_INSERT=1, STU_DELETE, STU_TRAVAL, SYS_QUIT=9};
 
