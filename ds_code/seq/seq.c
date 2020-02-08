@@ -59,10 +59,19 @@ int seqlist_del(seq_t *seqlist, const void *key, cmp_t cmp)
 
 	return 0;
 }
-#if 0
+
 // 改
-int seqlist_update(seq_t *seqlist, const void *key, cmp_t cmp, const void *newdata);
-#endif
+int seqlist_update(seq_t *seqlist, const void *key, cmp_t cmp, const void *newdata)
+{
+	void *f;
+
+	f = seqlist_find(seqlist, key, cmp);
+	if (NULL == f)
+		return 1;
+	memcpy(f, newdata, seqlist->size);
+
+	return 0;
+}
 
 void seqlist_traval(const seq_t *seqlist, void (*pri)(const void *data))
 {

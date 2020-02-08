@@ -19,15 +19,15 @@ static inline void INIT_LIST_HEAD(struct list_head *list)
 	list->prev = list;
 }
 
-static inline bool __list_add_valid(struct list_head *new,
+static inline int __list_add_valid(struct list_head *new,
 				struct list_head *prev,
 				struct list_head *next)
 {
-	return true;
+	return 1;
 }
-static inline bool __list_del_entry_valid(struct list_head *entry)
+static inline int __list_del_entry_valid(struct list_head *entry)
 {
-	return true;
+	return 1;
 }
 
 /*
@@ -92,7 +92,7 @@ static inline void __list_del(struct list_head * prev, struct list_head * next)
 /**
  * list_del - deletes entry from list.
  * @entry: the element to delete from the list.
- * Note: list_empty() on entry does not return true after this, the entry is
+ * Note: list_empty() on entry does not return 1 after this, the entry is
  * in an undefined state.
  */
 static inline void __list_del_entry(struct list_head *entry)
@@ -235,6 +235,10 @@ static inline int list_empty_careful(const struct list_head *head)
  */
 #define list_for_each(pos, head) \
 	for (pos = (head)->next; pos != (head); pos = pos->next)
+
+#define list_for_each_safe(pos, n, head) \
+	    for (pos = (head)->next, n = pos->next; pos != (head); \
+				        pos = n, n = pos->next)
 
 #endif
 

@@ -13,7 +13,7 @@ typedef struct seq_st {
 }seq_t;
 
 // 比较的函数指针类型
-typedef int (*cmp_t)(const void *data, const void *key);
+int (*cmp_t)(const void *data, const void *key);
 
 // 构建线性表头
 seq_t *seqlist_init(int size);

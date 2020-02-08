@@ -100,3 +100,13 @@ void llist_destroy(llisthead_t *h)
 	free(h);
 }
 
+void *llist_find(const llisthead_t *head, const void *key, cmp_t tmp)
+{
+	struct node_st *p;
+
+	p = find_node(head, key, cmp);
+	if (NULL == p)
+		return NULL;
+
+	return p->data;
+}

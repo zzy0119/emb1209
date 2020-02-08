@@ -33,6 +33,9 @@ int llist_insert(llisthead_t *head, const void *data, int way);
 // 删除
 int llist_delete(llisthead_t *head, const void *key, cmp_t cmp);
 
+// 查找
+void *llist_find(const llisthead_t *head, const void *key, cmp_t tmp);
+
 // 遍历
 void llist_traval(const llisthead_t *head, pri_t pri);
 

@@ -1,0 +1,12 @@
+
+
+静态库
+	相当于将文件做了个归档
+	
+	制作过程
+		gcc -c -o xxx.o xxx.c
+		ar -cr libxxx.a xxx.o
+	使用:
+		gcc -o obj main.c -lxxx -Lpath 
+
+

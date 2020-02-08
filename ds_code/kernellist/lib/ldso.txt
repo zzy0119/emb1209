@@ -1,0 +1,16 @@
+
+动态库
+	编译好的文件，执行的时候链接
+
+	制作动态库:
+		gcc -fPIC -shared -o libxxxx.so xxx.c
+	如何加载:
+		gcc -o obj main.c -lxxxx -Lpath
+	查看此文件所链接的所有动态库
+		ldd obj
+	动态库所在路径配置:
+		sudo vim  /etc/ld.so.conf
+			将库所在路径写入此文件
+	重新加载库:
+		sudo ldconfig
+	
