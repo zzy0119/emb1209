@@ -1,7 +1,7 @@
 #ifndef __LSTACK_H
 #define __LSTACK_H
 
-#include <llist.h>
+#include "/home/zhangzongyan/ds/emb1209/ds_code/llist2/llist.h" 
 // ADT
 typedef llisthead_t lstack_t;
 
