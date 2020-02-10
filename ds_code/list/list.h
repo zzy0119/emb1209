@@ -42,4 +42,7 @@ void list_traval(const head_t *head, pri_t pri);
 // 销毁
 void list_destroy(head_t *head);
 
+// 是否带环
+int list_circle(const head_t *head);
+
 #endif

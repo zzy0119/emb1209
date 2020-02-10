@@ -120,4 +120,42 @@ void list_destroy(head_t *head)
 	free(head);
 }
 
+// 是否带环
+int list_circle(const head_t *head)
+{
+	struct node_st *fast, *slow;
+
+	fast = slow = head->headnode.next; // 第一个数据节点
+	
+	while (slow->next != NULL && fast->next->next != NULL) {
+		if (slow == fast)
+			return 1;
+		slow = slow->next;
+		fast = fast->next->next;
+	}
+
+	return 0;
+}
+
+// 
+int creat_circle_list(const head_t *head, const void *key, cmp_t cmp)
+{
+	struct node_st *cur, *last;
+	
+	for (cur = head->headnode.next; cur->next != NULL; cur = cur->next)
+		;
+	last = cur;
+
+	for (cur = head->headnode.next; cur != NULL; cur = cur->next ) {
+		if (cmp(cur->data, key) == 0) {
+			last->next = cur;
+			return 0;
+		}
+	}	
+
+	return -1;
+}
+
+
+
 
