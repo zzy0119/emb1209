@@ -12,17 +12,17 @@ typedef struct {
 // 接口
 stack_t *stack_init(int size, int maxnmemb);
 
-// 入
-int stack_push(stack_t *s, const void *data);
-
-// 出
-int stack_pop(stack_t *s, void *data);
-
 // 是否空栈
 int stack_isempty(const stack_t *s);
 
 // 是否满
 int stack_isfull(const stack_t *s);
+
+// 入
+int stack_push(stack_t *s, const void *data);
+
+// 出
+int stack_pop(stack_t *s, void *data);
 
 // 销毁
 void stack_destroy(stack_t *t);
