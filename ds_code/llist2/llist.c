@@ -101,3 +101,27 @@ void *llist_find(const llisthead_t *head, const void *key, cmp_t cmp)
 
 	return p->data;
 }
+
+// 去除指定结点
+int llist_fetch(llisthead_t *head, const void *key, cmp_t cmp, void *data)
+{
+	struct node_st *f;	
+
+	f = find_node(head, key, cmp);
+	if (NULL == f)
+		return -1;
+	memcpy(data, f->data, head->size);
+		
+	f->prev->next = f->next;
+	f->next->prev = f->prev;
+	f->prev = f->next = NULL;
+	free(f);
+
+	return 0;
+}
+
+// 判断链表是否为空 
+int llist_isempty(const llisthead_t *head)
+{
+	return head->head.prev == &head->head && head->head.next == &head->head;
+}

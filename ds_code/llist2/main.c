@@ -46,6 +46,12 @@ int main(void)
 	llist_delete(head, &delid, stu_cmp);
 	llist_traval(head, pri_stu);
 
+	printf("*******fetch*******\n");
+	delid = 9;
+	if (llist_fetch(head, &delid, stu_cmp, &stu) == 0) {
+		printf("%d %s\n", stu.id, stu.name);
+	}
+
 	llist_destroy(head);
 
 	return 0;
