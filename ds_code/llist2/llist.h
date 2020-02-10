@@ -42,5 +42,11 @@ void llist_traval(const llisthead_t *head, pri_t pri);
 // 销毁
 void llist_destroy(llisthead_t *head);
 
+// 去除指定结点
+int llist_fetch(llisthead_t *head, const void *key, cmp_t cmp, void *data);
+
+// 判断链表是否为空 
+int llist_isempty(const llisthead_t *head);
+
 #endif
 
