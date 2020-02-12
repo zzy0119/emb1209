@@ -6,6 +6,7 @@
 #include <queue.h>
 
 char *midToAft(const char *mid);
+int cal_aft(const char *aft);
 int main(int argc, char *argv[])
 {
 	if (argc < 2)
@@ -14,9 +15,12 @@ int main(int argc, char *argv[])
 	char *aft = midToAft(argv[1]);
 	if (aft == NULL) {
 		printf("不符合正确的十以内四则运算\n");
+		return 1;
 	} else {
 		puts(aft);
 	}
+
+	printf("%d\n", cal_aft(aft));
 
 	return 0;
 }
@@ -116,4 +120,67 @@ ERROR:
 	free(res);
 	return NULL;
 }
+
+int cal2num(int left, int right, char ch)
+{
+	int res;
+
+	switch (ch) {
+		case '+':
+			res = left + right;
+			break;
+		case '-':
+			res = left - right;
+			break;
+		case '*':
+			res = left * right;
+			break;
+		case '/':
+			res = left / right;
+			break;
+		default:
+			break;
+	}
+	return res;
+}
+
+// 后缀表达式--->计算结果
+int cal_aft(const char *aft)
+{
+	int len;
+	stack_t *s;
+	int res;
+	int l, r;
+	int push;
+
+	len = strlen(aft);
+	s = stack_init(sizeof(int), len);
+	
+	while (*aft) {
+		if (is_digital(*aft)) {
+			push = *aft-'0';
+			stack_push(s, &push);
+		} else if (is_operator(*aft)) {
+			stack_pop(s, &r);
+			stack_pop(s, &l);
+			res = cal2num(l, r, *aft);		
+			stack_push(s, &res);
+		} else 
+			goto ERROR;
+		aft ++;
+	}
+	stack_pop(s, &res);
+	if (!stack_isempty(s))
+		goto ERROR;
+
+	stack_destroy(s);
+	return res;
+ERROR:
+	stack_destroy(s);
+	printf("ERROR\n");
+	return -1; 
+}
+
+
+
 
