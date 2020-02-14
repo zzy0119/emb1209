@@ -18,10 +18,15 @@ int tree_insert(struct node_st **root, const struct stu_st *stu);
 void traval_mid(const struct node_st *root);
 int tree_insert_other(struct node_st **root, const struct stu_st *stu);
 int tree_delete(struct node_st **root, int id);
+void tree_show(const struct node_st *root, int level);
+void tree_balance(struct node_st **root);
+
+static struct node_st *debug_root;
+
 int main(void)
 {
 	struct node_st *root = NULL; // root存储的是大树根节点地址	
-	int ids[] = {5,7,4,1,9,2,3,8,6};
+	int ids[] = {1,2,3,4,5,6,7,8,9,10};
 	struct stu_st s;
 
 	for (int i = 0; i < sizeof(ids) / sizeof(*ids); i++) {
@@ -29,11 +34,20 @@ int main(void)
 		snprintf(s.name, NAMESIZE, "stu%d", ids[i]);
 		tree_insert_other(&root, &s);	
 	}
+
+	debug_root = root;
 	
+	tree_show(root, 0);
+	tree_balance(&root);	
+	tree_show(root, 0);
+#if 0
 	tree_delete(&root, 5);
+	tree_show(root, 0);
 	tree_delete(&root, 9);
+	tree_show(root, 0);
 
 	traval_mid(root);
+#endif
 
 	return 0;
 }
@@ -104,6 +118,13 @@ static struct node_st *right_node(const struct node_st *root)
 	return right_node(root->right);
 }
 
+static struct node_st *left_node(const struct node_st *root)
+{
+	if (root->left == NULL)
+		return (struct node_st *)root;
+	return left_node(root->left);
+}
+
 static int _delete(struct node_st **root)
 {
 	struct node_st *del, *r, *l;
@@ -141,6 +162,79 @@ int tree_delete(struct node_st **root, int id)
 		}
 	}
 	return -1;
+}
+
+// 画树
+void tree_show(const struct node_st *root, int level)
+{
+	if (root == NULL)
+		return ;
+	tree_show(root->right, level+1);
+	// 右子树画完了
+	for (int i = 0; i < level; i++)
+		printf("    ");
+	printf("%d %s\n", root->data.id, root->data.name);
+	tree_show(root->left, level+1);
+}
+
+static int sum_nodes(const struct node_st *root)
+{
+	if (root == NULL)
+		return 0;
+	return sum_nodes(root->left)+sum_nodes(root->right)+1;
+}
+
+static void turn_left(struct node_st **root)
+{
+	struct node_st *r, *cur;
+
+	r = (*root)->right;
+	cur = *root;
+
+	*root = r;
+	cur->right = NULL;
+	left_node(r)->left = cur;
+	
+	getchar();
+	debug_root = *root;
+	tree_show(debug_root, 0);
+}
+
+static void turn_right(struct node_st **root)
+{
+	struct node_st *l, *cur;
+
+	cur = *root;
+	l = cur->left;
+
+	*root = l;
+	cur->left = NULL;
+	right_node(l)->right = cur;
+
+	getchar();
+	debug_root = *root;
+	tree_show(debug_root, 0);
+}
+
+// 平衡二叉树
+void tree_balance(struct node_st **root)
+{
+	int n;
+
+	if (*root == NULL)
+		return ;
+
+	while (1) {
+		n = sum_nodes((*root)->left) - sum_nodes((*root)->right);
+		if (n > 1) {
+			turn_right(root);
+		} else if (n < -1) {
+			turn_left(root);
+		} else
+			break;
+	} 
+	tree_balance(&(*root)->left);
+	tree_balance(&(*root)->right);
 }
 
 
