@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <errno.h>
+#include <string.h>
 
 #define BUFSIZE	10
 
@@ -14,7 +16,8 @@ int main(int argc, char *argv[])
 	// 打开  stdin stdout stderr
 	fp = fopen(argv[1], "r");
 	if (NULL == fp) {
-		printf("fopen() error\n");
+// 		fprintf(stderr, "fopen():%s\n", strerror(errno));
+		perror("fopen()");
 		return 1;
 	}
 

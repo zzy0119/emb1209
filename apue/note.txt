@@ -1,0 +1,40 @@
+
+标准io
+1. 文件流(FILE)
+	已打开文件的标志
+2. fopen(3)
+	打开方式: r r+ w w+ a a+	
+3. 读写文件
+	fgetc(3); / fputc(3);
+	getc(3); putc(3);
+	getchar(3)
+
+	fgets(3) / fputs(3);
+
+	fread(3) / fwrite(3)
+4. 定位流
+	fseek(3);--->返回当前文件偏移量
+	SEEK_SET 开头
+	SEEK_CUR 当前
+	SEEK_END 末尾
+	
+	rewind(3); ===> fseek(stream, 0, SEEK_SET);
+	ftell(stream);	
+5. 关闭
+	fclose(3);
+6. 标准输入(stdin) / 标准输出(stdout) / 标准错误输出(stderr)
+7. 缓冲
+	标准io有缓存区
+	作用:合并系统调用,提供程序的效率
+	方式:
+		行缓存: stdin stdout
+		无缓存: stderr
+		全缓存: 默认大小4k
+	刷新缓存区:
+		fflush(3);	
+8. 临时文件
+	tmpfile(3);
+	文件关闭或者进程结束文件就自动删除了
+
+
+
