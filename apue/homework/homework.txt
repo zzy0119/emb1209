@@ -6,3 +6,10 @@
 ./a.out hello world
 
 3. 将argv[1]文件倒序
+
+作业2020/2/18
+1. 统计argv[1]文件中多少个argv[2]
+./a.out /etc/passwd root
+
+上述2.3题用文件io尝试实现
+

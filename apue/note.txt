@@ -13,7 +13,7 @@
 
 	fread(3) / fwrite(3)
 4. 定位流
-	fseek(3);--->返回当前文件偏移量
+	fseek(3);--->成功返回0
 	SEEK_SET 开头
 	SEEK_CUR 当前
 	SEEK_END 末尾
@@ -35,6 +35,38 @@
 8. 临时文件
 	tmpfile(3);
 	文件关闭或者进程结束文件就自动删除了
+
+
+文件io
+1. 文件描述符
+	非负整型(0~1023)
+	已打开文件的标志
+
+2. io函数
+	open(2);
+		必选三选一:O_RDONLY O_WRONLY O_RDWR
+		可选:O_APPEND O_CREAT O_TRUNC
+	read(2) / write(2);
+	lseek(2); --->返回值是当前文件偏移量
+		空洞文件
+	close(2);
+
+3. 文件共享
+	dup(2);
+	dup2(2);
+	> 2> 2>&1	
+
+4. 原子操作
+	不可分割
+		open(2); dup2(2);
+
+
+
+
+
+
+
+
 
 
 

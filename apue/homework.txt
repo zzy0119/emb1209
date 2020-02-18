@@ -1,8 +1,0 @@
-
-作业2020/2/17
-1. 模仿cat功能，实现mycat()
-
-2. 将argv[2]对应的字符串写入argv[1]文件的第三行
-./a.out hello world
-
-3. 将argv[1]文件倒序
