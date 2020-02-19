@@ -60,9 +60,35 @@
 	不可分割
 		open(2); dup2(2);
 
+文件和目录
+1. stat(2)
+	struct stat res
+	<1>.st_mode & S_IFMT--->类型
+		- regular
+		d directory
+		l link
+		p pipe
+		c charactor
+		b block
+		s socket
+	<2>.st_mode & ~S_IFMT--->权限
+		u g o
+		rwx
+		u+s
+		g+s
+		o+t
+	<3>.st_nlink 硬链接个数
+	<4>.st_uid .st_gid	
+		getpwuid(3)--->struct passwd--->pw_name
+		getgrgid(3)--->struct group--->gr_name
+	<5>.st_size 文件字节个数
+		!= 所占磁盘空间大小(st_blocks)
+	<6>.st_mtim .st_atim .st_ctim
+		localtime(3)
+		strftime(3)
+		time(2)
 
-
-
+2. getopt(3)
 
 
 
