@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
+#include <time.h>
 
 int main(int argc, char *argv[])
 {
@@ -65,6 +66,23 @@ int main(int argc, char *argv[])
 	if (NULL == grp)
 		return 1;
 	printf("%s ", grp->gr_name);
+
+	// 文件总字节个数
+	printf("%ld ", res.st_size);
+
+	// 时间
+	struct tm *tmp = NULL;
+	char buf[100] = {};
+
+	tmp = localtime(&res.st_mtime);
+	if (NULL == tmp) {
+		fprintf(stderr, "localtime() failed\n");
+		return 1;
+	}
+	strftime(buf, 100, "%m月 %d %H:%M ", tmp);
+	printf("%s ", buf);
+
+	printf("%s ", argv[1]);
 
 	printf("\n");
 	return 0;
