@@ -89,10 +89,23 @@
 		time(2)
 
 2. getopt(3)
+	optstring:
+		./a.out /etc -lhello --help	 -a
+		/etc非选项参数
+		-l带参数选项
+		--help长格式选项
+		-a不带参数的选项
+		"-l:a"
+	getopt_long(3);
+		struct option
+			name--->长格式名字
+			val--->指定返回值
+3.读目录
+	opendir(3)---->DIR
+	readdir(3)---->struct dirent
+	closedir(3)
 
-
-
-
+	glob(3)
 
 
 
