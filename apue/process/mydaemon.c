@@ -8,10 +8,13 @@
 #include <unistd.h>
 #include <errno.h>
 #include <syslog.h>
+#include <sys/file.h>
 
-#define BUFSIZE	100
-#define FLNAME "/tmp/out"
+#define BUFSIZE		100
+#define FLNAME 		"/tmp/out"
+#define LOCKFLNAME	"/var/run/daemon.pid"
 
+static int singal_running(void);
 static int mydaemon(void)
 {
 	pid_t pid;
@@ -59,6 +62,12 @@ int main(void)
 	// 创建链接
 	openlog("mydaemon", LOG_PID | LOG_PERROR, LOG_DAEMON);
 
+	// 单实例
+	if (singal_running() == -1) {
+		syslog(LOG_ERR, "signal_running() failed");
+		exit(1);
+	}
+
 	if (mydaemon() == -1) {
 		exit(1);
 	}
@@ -83,3 +92,32 @@ int main(void)
 
 	exit(0);
 }
+
+// 单实例
+
+static int singal_running(void)
+{
+	int fd;
+	char buf[BUFSIZE] = {};
+
+	fd = open(LOCKFLNAME, O_RDWR | O_CREAT, 0666);
+	if (fd < 0) {
+		syslog(LOG_ERR, "open():%s", strerror(errno));
+		exit(1);
+	}
+
+	if (flock(fd, LOCK_EX | LOCK_NB) == -1) {
+		syslog(LOG_ERR, "flock():%s", strerror(errno));
+		close(fd);
+		return -1;
+	}
+
+	ftruncate(fd, 0);
+	snprintf(buf, BUFSIZE, "%d", getpid());
+	write(fd, buf, strlen(buf));
+
+	return 0;
+}
+
+
+
