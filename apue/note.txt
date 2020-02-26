@@ -107,5 +107,107 @@
 
 	glob(3)
 
+进程环境
+1.main函数是由内核中函数调用类似于
+exit(main());
+ｃ启动例程
+
+2. 进程终止
+	5种正常:
+		<1>main return
+		<2>exit(3)
+		<3>_exit(2) / _Exit(2);
+		<4>最后一个线程调用pthread_exit(3)
+		<5>最后一个线程从启动例程返回
+	3种异常终止:
+		<1>abort(3)
+		<2>最后一个线程对取消做出响应
+		<3>信号终止
+
+3. c存储空间布局
+4. 动态开辟
+	malloc(3)
+	calloc(3)
+	realloc(3)
+	free(3)　
+	动态库　静态库
+5. 环境变量和环境表
+	char **environ;
+	"name=value"
+6. setjmp(3) / longjmp(3);
+
+进程控制
+1. 进程标识
+	pid_t 非负整型
+	getpid(2)
+	getppid(2)
+2. 创建
+	fork(2);
+	通过复制父进程，包括虚拟地址空间
+	copy-on-write
+	fork创建子进程和父进程有什么不同:
+		<1>pid
+		<2>ppid
+		<3>资源占用率清空
+		<4>flock(2)文件锁不继承
+	用途:
+		<1>网络模型
+		<2>shell
+	vfork(2) 与 fork(2)不同:
+		<1>vfork(2)创建的子进程会阻塞父进程
+		<2>共享存储空间
+2. 收尸
+	wait(2); 任意子进程
+	waitpid(2);
+		pid是第一个参数
+		pid < -1:
+			进程组id等于pid绝对值的组内任意子进程收尸
+		pid == -1:
+			任意子进程
+		pid == 0:
+			与调用进程在同一个进程组内的任意子进程收尸
+		pid > 0:
+			进程号是pid的子进程收尸
+		
+3. 进程替换
+	execl(3);
+	execlp(3);
+	execv(3);
+	execvp(3);
+
+4. system(3);
+
+进程关系
+	会话承载进程组
+	进程组承载进程
+	会话中第一个进程组内的第一个进程就是会话组长，进程组组长
+	getsid(2);
+	getpgid(2);
+	getpgrp(2);
+	setpgid(2);
+
+守护进程
+	pid == pgid == sid 脱离控制终端
+	编程规则:
+		<1>umask(0)
+		<2>fork() 父进程exit(0)
+		<3>子进程调用setsid(2)
+		<4>chdir("/");	
+		<5> fd = open("/dev/null");
+			dup2(fd, 0)
+			dup2(fd, 1)
+			dup2(fd, 2)
+	daemon(3);
+	单实例守护进程:
+		进程同时只能运行一次
+		flock(2);--->LOCK_EX|LOCK_NB
+		"/var/run/daemon.pid"
+
+
+
+
+
+
+
 
 
