@@ -27,9 +27,16 @@ void handler2(int s)
 
 int main(void)
 {
+	struct sigaction act, oldact;
 	// 注册行为
-	signal(SIGINT, handler);
-	signal(SIGQUIT, handler);
+// 	signal(SIGINT, handler);
+//	signal(SIGQUIT, handler);
+
+	act.sa_handler = handler;
+	sigemptyset(&act.sa_mask);
+	sigaddset(&act.sa_mask, SIGQUIT);
+	act.sa_flags = 0;
+	sigaction(SIGINT, &act, &oldact);
 
 	if (setjmp(env) != 0) 
 		printf("jump here\n");

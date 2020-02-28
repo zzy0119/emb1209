@@ -202,9 +202,64 @@ exit(main());
 		进程同时只能运行一次
 		flock(2);--->LOCK_EX|LOCK_NB
 		"/var/run/daemon.pid"
+	日志:
+		openlog();
+		syslog();
+		closelog();
+
+信号:
+	标准信号和实时信号
+	标准:1~31
+	实时:34~64
+标准信号:
+	默认行为:
+		<1> Term
+		<2> Core
+		<3> Stop
+		<4> Cont
+		<5> Ign
+	如何产生:
+		keyborad--->
+			ctrl+c  SIGINT
+			ctrl+\	SIGQUIT
+			ctrl+z	SIGSTOP
+		alarm(2)--->SIGALRM setitimer(2);
+		kill(2);
+	等待信号到来:
+		pause(2);
+		sigsuspend(2);
+	改变信号行为:
+		sigaction(2);
+		struct sigaction {
+			sa_handler;// 信号处理函数
+			sa_mask;//信号处理函数调用期间的信号屏蔽字
+			sa_flags; 
+		};
+	信号集:
+		sigset_t	
+		sigemptyset(3);
+		sigfillset(3);
+		sigaddset(3);
+		sigdelset(3);
+		sigismember(3);
+	设置进程的信号屏蔽字: (mask位图)
+		sigpromask(2);
+	信号的响应过程:
+		<1>丢失
+		<2>信号处理函数中不能用longjmp跳转，用siglongjmp(2)
+		<3>打断阻塞的系统调用:
+			阻塞的系统调用函数需要判断是否有假错
+
+		<4>信号的相应过程是嵌套的
+		<5>在信号处理函数中使用可重入函数
+	应用:
+		流量控制:
+			令牌桶模型:
+				令牌　上限　速率		
 
 
 
+	
 
 
 
