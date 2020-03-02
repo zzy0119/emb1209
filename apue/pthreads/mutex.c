@@ -85,6 +85,7 @@ static void *thr_fun(void *arg)
 			continue;
 		}
 		j = job;
+		job = 0; // 任务已取走
 		pthread_mutex_unlock(&mutex);
 		if (is_primer(j)) {
 			printf("%d is a primer\n", j);
