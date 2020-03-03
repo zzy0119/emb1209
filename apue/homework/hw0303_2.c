@@ -26,9 +26,16 @@ int main(void)
 		}
 	}
 
-	for (int i = 0; i < THRNR; i++) {
+	for (int i = 0; i < 3; i++) {
 		sleep(1);
 	}
+	
+	// 取消任务线程
+	for (int i = 0; i < THRNR; i++) {
+		pthread_cancel(tids[i]);
+		pthread_join(tids[i], NULL);
+	}
+
 	pthread_mutex_destroy(&mut);
 	pthread_cond_destroy(&cond);
 
@@ -41,6 +48,7 @@ static void *thr_job(void *arg)
 	char c = 'a'+id;
 
 	while (1) {
+		pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 		pthread_mutex_lock(&mut);	
 		while (cur_id != id) {
 			pthread_cond_wait(&cond, &mut);
@@ -50,6 +58,8 @@ static void *thr_job(void *arg)
 		cur_id = (cur_id+1)%THRNR;
 		pthread_cond_broadcast(&cond);
 		pthread_mutex_unlock(&mut);
+		pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+		pthread_testcancel();
 	}
 }
 
