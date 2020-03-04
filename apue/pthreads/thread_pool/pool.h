@@ -2,17 +2,11 @@
 #define __POOL_H
 
 #include "queue.h"
+#include <pthread.h>
 
-// 任务类型
-typedef struct {
-	void *(*job)(void *arg);
-	void *arg;
-}theadpool_task_t;
+#define DEFAULT_ADD_THR_NUM	3
 
-enum {
-	THR_BUSY,
-	THR_FREE
-};
+typedef void *(*job_t)(void *arg);
 
 typedef struct {
 	// 任务队列	
@@ -28,12 +22,29 @@ typedef struct {
 	int min_thr_num; // 最少线程数
 	int cur_live_thr_num; // 池中现有线程
 	int busy_thr_num; // 正在处理任务中的线程
+	int wait_exit_thr_num; // 等待终止的线程个数
 
 	int queue_max_size;// 任务队列能容纳任务个数
 	
 	// 线程池状态
 	int shutdown; // 1关闭　0
 }threadpool_t;
+
+// 接口
+/*
+   创建线程池
+ */
+threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_num);
+
+/*
+ 添加任务
+ */
+int threadpool_add_task(threadpool_t *pool, job_t job, void *arg);
+
+/*
+   销毁
+ */
+void threadpool_destroy(threadpool_t *pool);
 
 #endif
 
