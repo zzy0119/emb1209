@@ -53,6 +53,61 @@ static void *threadpool_job(void *arg)
 	}
 }
 
+/*
+ 管理者线程函数
+ */
+static void *admin_thread(void *arg)
+{
+	threadpool_t *pool = arg;
+	int queue_size, live_thr_num, busy_thr_num, min_thr_num;
+	int pos;
+	
+	while (!pool->shutdown) {
+		pthread_mutex_lock(&pool->lock);
+		queue_size = pool->queue_size;
+		live_thr_num = pool->cur_live_thr_num;
+		min_thr_num = pool->min_thr_num;
+		pthread_mutex_unlock(&pool->lock);
+
+		pthread_mutex_lock(&pool->busy_lock);
+		busy_thr_num = pool->busy_thr_num;
+		pthread_mutex_unlock(&pool->busy_lock);
+		/*
+			至少有空闲线程５个 
+		 */
+		if (queue_size >= MIN_FREE_THR && \
+				pool->cur_live_thr_num < pool->max_thr_num) {
+			pthread_mutex_lock(&pool->lock);
+			// 增加
+
+			for (int i = 0, pos = 0; i < DEFAULT_ADD_THR_NUM && \
+					pool->cur_live_thr_num < pool->max_thr_num && \
+					pos < pool->max_thr_num; pos++) {
+				if ((pool->threads)[pos] != 0)
+					continue;
+				pthread_create((pool->threads)+pos, NULL, threadpool_job, \
+						(void *)pool);	
+				i++;
+				pool->cur_live_thr_num++;
+			}
+			pthread_mutex_unlock(&pool->lock);
+		}
+		
+		// 是否销毁多余的线程	
+		if (busy_thr_num * 2 < live_thr_num && live_thr_num > min_thr_num) {
+			pthread_mutex_lock(&pool->lock);
+			pool->wait_exit_thr_num = DEFAULT_DESTROY_NUM;
+			pthread_mutex_unlock(&pool->lock);
+
+			for (int i = 0; i < DEFAULT_DESTROY_NUM; i++) {
+				pthread_cond_signal(&pool->task_queue_not_empty);
+			}
+		}
+		sleep(1);
+	}
+
+}
+
 threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_num)
 {
 	threadpool_t *mypool = NULL;

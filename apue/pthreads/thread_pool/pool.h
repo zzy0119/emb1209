@@ -4,7 +4,9 @@
 #include "queue.h"
 #include <pthread.h>
 
+#define MIN_FREE_THR		5
 #define DEFAULT_ADD_THR_NUM	3
+#define DEFAULT_DESTROY_NUM	3
 
 typedef void *(*job_t)(void *arg);
 
