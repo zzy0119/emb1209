@@ -14,6 +14,7 @@ typedef struct {
 	pthread_t *threads; // 处理任务线程
 	pthread_t admin_tid;// 管理线程池　线程
 	pthread_mutex_t lock; // 队列锁
+	pthread_mutex_t busy_lock;
 	pthread_cond_t task_queue_not_full; // 任务队列没满
 	pthread_cond_t task_queue_not_empty; // 任务队列不空
 
@@ -24,6 +25,7 @@ typedef struct {
 	int busy_thr_num; // 正在处理任务中的线程
 	int wait_exit_thr_num; // 等待终止的线程个数
 
+	int queue_size; // 队列中当前任务个数
 	int queue_max_size;// 任务队列能容纳任务个数
 	
 	// 线程池状态

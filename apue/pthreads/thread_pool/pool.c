@@ -6,6 +6,53 @@ typedef struct {
 	void *arg;
 }threadpool_task_t;
 
+/*任务线程处理函数*/
+static void *threadpool_job(void *arg)
+{
+	threadpool_t *pool = arg;
+	threadpool_task_t task;
+
+	while (1) {
+		pthread_mutex_lock(&pool->lock);
+		while (pool->queue_size == 0 && pool->shutdown != 0) {
+			pthread_cond_wait(&pool->task_queue_not_empty, &pool->lock);
+
+			// 是否由于线程终止而接收到的通知
+			if (pool->wait_exit_thr_num > 0) {
+				pool->wait_exit_thr_num --;
+				if (pool->cur_live_thr_num > pool->min_thr_num) {
+					// 自杀	
+					pool->cur_live_thr_num--;	
+					pthread_mutex_unlock(&pool->lock);
+					pthread_exit(NULL);
+				}
+			}
+		}
+
+		// 是否是池关闭
+		if (pool->shutdown)	{
+			pthread_mutex_unlock(&pool->lock);
+			pthread_exit(NULL);
+		}
+	
+		// 任务来了
+		queue_deq(pool->task_queue, &task);
+		pthread_cond_broadcast(&task_queue_not_full);
+		pthread_mutex_unlock(&pool->lock);
+
+		pthread_mutex_lock(&pool->busy_lock);
+		pool->busy_thr_num ++;
+		pthread_mutex_unlock(&pool->busy_lock);
+
+		// 执行任务
+		(task.job)(task.arg);
+
+		pthread_mutex_lock(&pool->busy_lock);
+		pool->busy_thr_num --;
+		pthread_mutex_unlock(&pool->busy_lock);
+	}
+}
+
 threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_num)
 {
 	threadpool_t *mypool = NULL;
@@ -29,6 +76,7 @@ threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_n
 	}
 
 	pthread_mutex_init(&mypool->lock, NULL);
+	pthread_mutex_init(&mypool->busy_lock, NULL);
 	pthread_cond_init(&mypool->task_queue_not_full, NULL);
 	pthread_cond_init(&mypool->task_queue_not_empty, NULL);
 
@@ -37,12 +85,13 @@ threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_n
 	mypool->busy_thr_num = 0;
 	mypool->cur_live_thr_num = min_thr_num;
 	mypool->wait_exit_thr_num = 0;
+	mypool->queue_size = 0;
 
 	mypool->shutdown = 1;
 
 	// 启动min_thr_num线程
 	for (int i = 0; i < min_thr_num; i ++) {
-		err = pthread_create(mypool->threads+i, NULL, threadpool_job, (void *)pool);
+		err = pthread_create(mypool->threads+i, NULL, threadpool_job, (void *)mypool);
 		if (err) {
 			fprintf(stderr, "pthread_create():%s\n", strerror(err));
 			queue_destroy(mypool->task_queue);
