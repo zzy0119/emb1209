@@ -14,7 +14,7 @@ static void *threadpool_job(void *arg)
 
 	while (1) {
 		pthread_mutex_lock(&pool->lock);
-		while (pool->queue_size == 0 && pool->shutdown != 0) {
+		while (pool->queue_size == 0 && pool->shutdown == 0) {
 			pthread_cond_wait(&pool->task_queue_not_empty, &pool->lock);
 
 			// 是否由于线程终止而接收到的通知
@@ -105,7 +105,7 @@ static void *admin_thread(void *arg)
 		}
 		sleep(1);
 	}
-
+	pthread_exit((void *)0);
 }
 
 threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_num)
@@ -142,7 +142,7 @@ threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_n
 	mypool->wait_exit_thr_num = 0;
 	mypool->queue_size = 0;
 
-	mypool->shutdown = 1;
+	mypool->shutdown = 0;
 
 	// 启动min_thr_num线程
 	for (int i = 0; i < min_thr_num; i ++) {
@@ -161,3 +161,28 @@ threadpool_t *threadpool_init(int queue_max_size, int min_thr_num, int max_thr_n
 
 	return mypool;
 }
+
+int threadpool_add_task(threadpool_t *pool, job_t job, void *arg)
+{
+	threadpool_task_t task;
+
+	pthread_mutex_lock(&pool->lock);
+	while (queue_isfull(&pool->task_queue)) {
+		pthread_cond_wait(&pool->task_queue_not_full, &pool->lock);
+	}
+
+	if (pool->shutdown) {
+		pthread_mutex_unlock(&pool->lock);
+		return -1;
+	}
+
+	task.job = job;
+	task.arg = arg;
+	queue_enq(&pool->task_queue, &task);
+	pool->queue_size++;
+	pthread_cond_signal(&pool->task_queue_not_empty);
+	pthread_mutex_unlock(&pool_task);	
+
+	return 0;
+}
+
