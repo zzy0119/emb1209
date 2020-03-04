@@ -19,7 +19,6 @@ static void *threadpool_job(void *arg)
 	threadpool_task_t task;
 
 	while (1) {
-		pthread_mutex_lock(&pool->lock);
 		while (pool->queue_size == 0 && pool->shutdown == 0) {
 			pthread_cond_wait(&pool->task_queue_not_empty, &pool->lock);
 
@@ -43,9 +42,10 @@ static void *threadpool_job(void *arg)
 	
 		// 任务来了
 		queue_deq(pool->task_queue, &task);
+		pool->queue_size--;
 		pthread_cond_broadcast(&pool->task_queue_not_full);
 		pthread_mutex_unlock(&pool->lock);
-
+		
 		pthread_mutex_lock(&pool->busy_lock);
 		pool->busy_thr_num ++;
 		pthread_mutex_unlock(&pool->busy_lock);
