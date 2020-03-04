@@ -18,11 +18,26 @@ static int job;
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 static void *thr_fun(void *arg);
+
+//　线程终止处理程序
+static void clean1(void *arg)
+{
+	printf("%s is called\n", __FUNCTION__);
+}
+
+static void clean2(void *arg)
+{
+	printf("%s is called\n", __FUNCTION__);
+}
+
 int main(void)
 {
 	pthread_t tids[THR_NR] = {};
 	int err;
 
+	pthread_cleanup_push(clean1, NULL);
+	pthread_cleanup_push(clean2, NULL);
+	
 	for (int i = 0; i < THR_NR; i++) {
 		err = pthread_create(tids+i, NULL, thr_fun, NULL);	
 		if (err) {
@@ -57,7 +72,9 @@ int main(void)
 
 	pthread_mutex_destroy(&mutex);
 
-	exit(0);
+	pthread_exit(0);
+	pthread_cleanup_pop(0);
+	pthread_cleanup_pop(0);
 }
 
 static int is_primer(int n)
@@ -69,6 +86,7 @@ static int is_primer(int n)
 	}
 	return 1;
 }
+
 // 任务线程
 static void *thr_fun(void *arg)
 {
