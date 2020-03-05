@@ -19,6 +19,7 @@ static void *threadpool_job(void *arg)
 	threadpool_task_t task;
 
 	while (1) {
+		pthread_mutex_lock(&pool->lock);
 		while (pool->queue_size == 0 && pool->shutdown == 0) {
 			pthread_cond_wait(&pool->task_queue_not_empty, &pool->lock);
 
