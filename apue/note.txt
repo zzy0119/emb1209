@@ -257,12 +257,95 @@ exit(main());
 			令牌桶模型:
 				令牌　上限　速率		
 
-
-
+线程
+	独立运行的函数
+	线程标识:pthread_t
+	pthread_self(3);
+	pthread_eqaul(3);
 	
+	创建
+		pthread_create(3);
+	终止
+		return 
+		pthread_exit(3);
+		被cancel
+	收尸
+		pthread_join(3);	
+	取消
+		pthread_cancel(3);
+		when / whether
+		when--->type
+			asynchronous
+			deferred(default)
+		whether
+			enabled(default)
+			disabeled
+		pthread_testcancel(3);
 
+		pthread_cleanup_push(3);
+		pthread_cleanup_pop(3);
+	属性:
+		分离属性
+		pthread_detach(3);
 
+	同步
+		pthread_mutex_t 
+		pthread_mutex_init(3);
+		pthread_mutex_lock(3);
+		pthread_mutex_unlock(3);
+		pthread_mutex_destroy(3);
 
+		条件变量
+		pthread_cond_t
+		pthread_cond_init(3);
+		pthread_cond_signal(3);
+		pthread_cond_broadcast(3);
+		pthread_cond_wait(3);
+		pthread_cond_destroy(3);
+	动态线程池		
+		优势:减少服务端随着任务量增加频繁创建销毁线程的开销
+			能保证接收到任务，有一部分线程可以立即处理
+		数据类型:
+			任务队列
+			池管理线程
+			任务线程数据结构
+	与信号:
+		pthread_kill(3);
+		pthread_sigwait(3);
+		pthread_sigmask(3);
+	同一个进程环境中的多个线程:
+		独立:
+			栈
+			tid
+		共享:
+			data heap-->全局的
+			pid
+			ppid
+			sid
+			pgid
+			信号的行为
+	与io:
+		pread(3); / pwrite(3);
 
+高级io
+	非阻塞、io多路转接、记录锁、存储映射io
+	非阻塞:
+		open(2);---->O_NONBLOCK
+		fcntl(2); 
+	编程模型
+		有限状态机
+			现态--->条件--->次态
+		推动状态机
+	io多路转接
+		select(2);
+			个数有限
+			监视事件和返回事件在同一个集合
+		poll(2);
+			结构体
+			监视事件和返回事件是不同变量
+		epoll(7)
+			仅限于linux
+	存储映射io:
+		mmap(2);
 
 
