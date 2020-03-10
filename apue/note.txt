@@ -348,4 +348,23 @@ exit(main());
 	存储映射io:
 		mmap(2);
 
+进程间通信
+	管道:
+		匿名管道pipe--->有亲缘关系进程
+			pipe(2);	
+		命名管道fifo	
+			mkfifo(3);
+	xsi ipc (sysV):
+		ipcs
+		ipcrm
+		
+		ftok(3);--->key_t
+
+		xxxget();
+		xxxop();
+		xxxctl();
+
+		massage queue
+		share memery
+		semphore array--->多进程访问临界区实现同步
 

@@ -33,7 +33,7 @@ int main(void)
 
 	// 数据交换
 
-	if (msgrcv(mgid, &buf, MSGSIZE, 0, 0) == -1) {
+	if (msgrcv(mgid, &buf, MSGSIZE, 5, 0) == -1) {
 		perror("msgrcv()");
 		goto ERROR;
 	}
