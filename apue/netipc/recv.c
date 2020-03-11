@@ -36,6 +36,7 @@ int main(void)
 		exit(1);
 	}
 
+	// !!!!!!!!!!!!!!!!!!!!
 	raddrlen = sizeof(raddr);
 	while (1) {
 		cnt = recvfrom(sd, &rcvbuf, sizeof(rcvbuf), 0, (void *)&raddr, &raddrlen);
