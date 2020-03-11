@@ -39,6 +39,7 @@ int main(void)
 	}
 
 	while (1) {
+#if 1
 		newsd = accept(sd, NULL, NULL);
 		if (newsd == -1) {
 			perror("accept()");
@@ -48,6 +49,7 @@ int main(void)
 		cnt = read(newsd, &rcvbuf, MSGSIZE); // recv();
 		write(1, rcvbuf.msg, cnt);
 		close(newsd);
+#endif
 	}
 
 	close(sd);
