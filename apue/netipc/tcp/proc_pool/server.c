@@ -52,6 +52,7 @@ int main(void)
 	int freecnt, busycnt;
 	int semid;
 	struct sockaddr_in laddr;
+	int optval;
 
 	// 池创建
 	pool = mmap(NULL, sizeof(pool_t)*MAX_PROC_NR, PROT_READ | PROT_WRITE, \
@@ -71,6 +72,13 @@ int main(void)
 	sd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sd == -1) {
 		perror("socket()");
+		goto SOCKET_ERROR;
+	}
+
+	// 地址允许重用
+	optval = 1;
+	if (setsockopt(sd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+		perror("setsockopt()");
 		goto SOCKET_ERROR;
 	}
 
