@@ -2,20 +2,24 @@
 #include <string.h>
 // 类 
 
-class Student {
-public:
-	// 描述类属性
-	int id;
-	char name[32];
-	
-	// 描述行为--->方法
-	void show() {
-		printf("%d %s\n", id, name);
-	}
-};
+namespace Zzy{
+	class Student {
+		public:
+			// 描述类属性
+			int id;
+			char name[32];
+
+			// 描述行为--->方法
+			void show() {
+				printf("%d %s\n", id, name);
+			}
+	};
+}
 
 int main(void)
 {
+	using namespace Zzy;
+
 	// 实例化对象
 	Student stu;
 
