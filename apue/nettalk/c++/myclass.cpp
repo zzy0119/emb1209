@@ -16,7 +16,7 @@ class Person {
 	 */
 	private:
 		// Property
-		const char *m_name;
+		const char *name;
 		int m_age;
 		int m_id;
 		float m_score;
@@ -33,14 +33,14 @@ class Person {
 // :: 域解析符		inline
 void Person::say() 
 {
-	cout <<  name << "的年龄是" << age << "id是" << id << \
-		"成绩是" << score << endl;
+	cout <<  name << "的年龄是" << m_age << "id是" << m_id << \
+		"成绩是" << m_score << endl;
 }
 
 // 成员们函数实现
-void Person::setName(const char *nm)
+void Person::setName(const char *name)
 {
-	m_name = nm;
+	this->name = name;
 }
 
 void Person::setAge(int a)
