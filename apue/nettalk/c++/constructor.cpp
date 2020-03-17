@@ -16,9 +16,16 @@ class Circle {
 };
 
 // 实现方法
+/*
 Circle::Circle(int r)
 {
 	m_r = r;
+}
+*/
+// 初始化列表
+Circle::Circle(int r):m_r(r)
+{
+
 }
 
 Circle::Circle()
@@ -37,11 +44,13 @@ int main(void)
 	Circle c(3);
 	Circle c2; // 不加括号
 
-	Circle *p = new Circle; // 括号可加可不加
+	Circle *p = new Circle(10); // 括号可加可不加
 
 	cout << "周长是:" << c.getGirth() << endl;
 
 	cout << "c2周长是" << c2.getGirth() << endl;
+
+	cout << p->getGirth() << endl;
 
 	return 0;
 }
